@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Display with Properties and Zoom</title>
+    <!-- Bootstrap CSS -->
+    <link href="/DistanceCalculator/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/DistanceCalculator/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+    <div style="display: flex; justify-content: space-around; margin: 5px;">
+        <div class="position-relative" style="width: 45%; height: 100vh;">
+            <div class="custom-file mb-3">
+                <input type="file" class="custom-file-input" id="imageInput">
+                <label class="custom-file-label" for="imageInput">Choose file</label>
+            </div>
+            <div id="imageContainer">
+                <canvas id="canvas"></canvas>
+                <div id="imageProperties" class="d-none">
+                    <p><strong>Name:</strong> <span id="imageName"></span></p>
+                    <p><strong>Size:</strong> <span id="imageSize"></span> KB</p>
+                    <p><strong>Dimensions:</strong> <span id="imageDimensions"></span></p>
+                    <p><strong>Focal Length:</strong> <span id="imageFocalLength"></span></p>
+                    <p><strong>Digital Zoom:</strong> <span id="imageDigitalZoom"></span></p>
+                </div>
+                <div id="inputs" class="d-none" style="width: 100%; display: flex; justify-content: space-around;">
+                    <div style="width: min-content;">
+                        <label for="MatrixWidthInMilimetersInpt"><b>MatrixWidth(mm)</b></label>
+                        <input id="MatrixWidthInMilimetersInpt" type="number"/>
+                    </div>
+                    <div style="width: min-content;">
+                        <label for="MatrixHeightInMilimetersInpt"><b>MatrixHeight(mm)</b></label>
+                        <input id="MatrixHeightInMilimetersInpt" type="number"/>
+                    </div>
+                    <div style="width: min-content;">
+                        <label for="TiltInpt"><b>Tilt</b></label>
+                        <input id="TiltInpt" type="number"/>
+                    </div>
+                    <div style="width: min-content;">
+                        <label for="CameraHeightInpt"><b>CameraHeight</b></label>
+                        <input id="CameraHeightInpt" type="number"/>
+                    </div>
+                </div>
+            </div>
+            <div id="coordinates"></div>
+
+        </div>
+        <div style="width: 50%; border: rgb(255, 255, 255) 1px dashed; padding: 5px;">
+            <h5>Result table</h5>
+            <table id="resultTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th title="DeltaXInPixel">DeltaX(px)</th>
+                        <th title="DeltaYInPixel">DeltaY(px)</th>
+                        <th title="ResolutionWidth">ResolutionWidth</th>
+                        <th title="ResolutionHeight">ResolutionHeight</th>
+                        <th title="FocusLengthInMilimeters">FocusLength(mm)</th>
+                        <th title="CameraHeight">CameraHeight</th>
+                        <th title="Tilt">Tilt</th>
+                        <th title="MatrixWidthInMilimeters">MatrixWidth(mm)</th>
+                        <th title="MatrixHeightInMilimeters">MatrixHeight(mm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td>Row 1, Col 1</td>
+                        <td>Row 1, Col 1</td>
+                        <td>Row 1, Col 2</td>
+                        <td>Row 1, Col 3</td>
+                        <td>Row 1, Col 4</td>
+                        <td>Row 1, Col 5</td>
+                        <td>Row 1, Col 6</td>
+                        <td>Row 1, Col 7</td>
+                        <td>Row 1, Col 8</td>
+                        <td>Row 1, Col 9</td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="/DistanceCalculator/js/vendors/jquery-3.5.1.slim.min.js"></script>
+    <script src="/DistanceCalculator/js/vendors/popper.min.js"></script>
+    <script src="/DistanceCalculator/js/vendors/bootstrap.min.js"></script>
+    <!-- Fabric.js -->
+    <script src="/DistanceCalculator/js/vendors/fabric.min.js"></script>
+    <!-- Exif-js -->
+    <script src="/DistanceCalculator/js/vendors/exif.min.js"></script>
+    <script src="/DistanceCalculator/js/main.js"></script>
+    <script src="/DistanceCalculator/js/calculator.js"></script>
+</body>
+
+</html>

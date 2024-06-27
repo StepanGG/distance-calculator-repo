@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Display with Properties and Zoom</title>
     <!-- Bootstrap CSS -->
-    <link href="/DistanceCalculator/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/DistanceCalculator/css/main.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
 </head>
 
 <body>
@@ -19,31 +19,39 @@
             </div>
             <div id="imageContainer">
                 <canvas id="canvas"></canvas>
-                <div id="imageProperties" class="d-none">
+                <div id="imageProperties" class="d-none" style="font-size: 12px;">
                     <p><strong>Name:</strong> <span id="imageName"></span></p>
                     <p><strong>Size:</strong> <span id="imageSize"></span> KB</p>
                     <p><strong>Dimensions:</strong> <span id="imageDimensions"></span></p>
                     <p><strong>Focal Length:</strong> <span id="imageFocalLength"></span></p>
                     <p><strong>Digital Zoom:</strong> <span id="imageDigitalZoom"></span></p>
                 </div>
-                <div id="inputs" class="d-none" style="width: 100%; display: flex; justify-content: space-around;">
-                    <div style="width: min-content;">
-                        <label for="MatrixWidthInMilimetersInpt"><b>MatrixWidth(mm)</b></label>
-                        <input id="MatrixWidthInMilimetersInpt" type="number"/>
-                    </div>
-                    <div style="width: min-content;">
-                        <label for="MatrixHeightInMilimetersInpt"><b>MatrixHeight(mm)</b></label>
-                        <input id="MatrixHeightInMilimetersInpt" type="number"/>
-                    </div>
-                    <div style="width: min-content;">
-                        <label for="TiltInpt"><b>Tilt</b></label>
-                        <input id="TiltInpt" type="number"/>
-                    </div>
-                    <div style="width: min-content;">
-                        <label for="CameraHeightInpt"><b>CameraHeight</b></label>
-                        <input id="CameraHeightInpt" type="number"/>
-                    </div>
+                <div id="inputs" class="d-none">
+                    <form class="needs-validation" novalidate name="conditionValues" required
+                        style="width: 100%; display: flex; justify-content: space-around;">
+                        <div style="width: min-content;">
+                            <label for="MatrixWidthInMilimetersInpt"><b>MatrixWidth(mm)</b></label>
+                            <input class="form-control" id="MatrixWidthInMilimetersInpt"
+                                name="MatrixWidthInMilimetersInpt" type="number" min="0" step="0.1" required value=""/> <!-- test value MatrixWidthInMilimeters: 3.799 -->
+                        </div>
+                        <div style="width: min-content;">
+                            <label for="MatrixHeightInMilimetersInpt"><b>MatrixHeight(mm)</b></label>
+                            <input class="form-control" id="MatrixHeightInMilimetersInpt"
+                                name="MatrixHeightInMilimetersInpt" type="number" min="0" step="0.1" required value=""/> <!-- test value MatrixHeightInMilimeters: 5.053 -->
+                        </div>
+                        <div style="width: min-content;">
+                            <label for="TiltInpt"><b>Tilt</b></label>
+                            <input class="form-control" id="TiltInpt" name="TiltInpt" type="number" min="0" step="0.1"
+                                required value=""/> <!-- test value Tilt: 60 -->
+                        </div>
+                        <div style="width: min-content;">
+                            <label for="CameraHeightInpt"><b>CameraHeight</b></label>
+                            <input class="form-control" id="CameraHeightInpt" name="CameraHeightInpt" type="number"
+                                min="0" step="0.1" required  value=""/> <!-- test value CameraHeight: 1.2 -->
+                        </div>
+                    </form>
                 </div>
+
             </div>
             <div id="coordinates"></div>
 
@@ -56,41 +64,29 @@
                         <th>#</th>
                         <th title="DeltaXInPixel">DeltaX(px)</th>
                         <th title="DeltaYInPixel">DeltaY(px)</th>
+                        <th title="DeltaXInMeters">DeltaX(m)</th>
+                        <th title="DeltaYInMeters">DeltaY(m)</th>
                         <th title="ResolutionWidth">ResolutionWidth</th>
                         <th title="ResolutionHeight">ResolutionHeight</th>
                         <th title="FocusLengthInMilimeters">FocusLength(mm)</th>
-                        <th title="CameraHeight">CameraHeight</th>
-                        <th title="Tilt">Tilt</th>
-                        <th title="MatrixWidthInMilimeters">MatrixWidth(mm)</th>
-                        <th title="MatrixHeightInMilimeters">MatrixHeight(mm)</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr>
-                        <td>Row 1, Col 1</td>
-                        <td>Row 1, Col 1</td>
-                        <td>Row 1, Col 2</td>
-                        <td>Row 1, Col 3</td>
-                        <td>Row 1, Col 4</td>
-                        <td>Row 1, Col 5</td>
-                        <td>Row 1, Col 6</td>
-                        <td>Row 1, Col 7</td>
-                        <td>Row 1, Col 8</td>
-                        <td>Row 1, Col 9</td>
-                    </tr> -->
                 </tbody>
             </table>
         </div>
     </div>
-    <script src="/DistanceCalculator/js/vendors/jquery-3.5.1.slim.min.js"></script>
-    <script src="/DistanceCalculator/js/vendors/popper.min.js"></script>
-    <script src="/DistanceCalculator/js/vendors/bootstrap.min.js"></script>
+    <script src="/js/vendors/jquery-3.5.1.slim.min.js"></script>
+    <script src="/js/vendors/popper.min.js"></script>
+    <script src="/js/vendors/bootstrap.min.js"></script>
     <!-- Fabric.js -->
-    <script src="/DistanceCalculator/js/vendors/fabric.min.js"></script>
+    <script src="/js/vendors/fabric.min.js"></script>
     <!-- Exif-js -->
-    <script src="/DistanceCalculator/js/vendors/exif.min.js"></script>
-    <script src="/DistanceCalculator/js/main.js"></script>
-    <script src="/DistanceCalculator/js/calculator.js"></script>
+    <script src="/js/vendors/exif.min.js"></script>
+    <!-- -->
+    <script src="/js/helpers/validation.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/calculator.js"></script>
 </body>
 
 </html>

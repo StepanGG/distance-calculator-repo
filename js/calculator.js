@@ -14,15 +14,15 @@ function getDeltas(deltaX, deltaY, cameraModel) {
 }
 
 class CameraModel {
-    constructor() {
-        this.ResolutionWidth = 1920;
-        this.ResolutionHeight = 1080;
-        this.FocusLengthInMilimeters = 0;
-        this.MatrixWidthInMilimeters = 0;
-        this.MatrixHeightInMilimeters = 0;
-        this.Tilt = 0; // from 0 to 90 degrees
-        this.CameraAzimuth = 0; // from 0 to 360 degrees, 0 - North, clockwise
-        this.CameraHeight = 0; // absolute height below earth's surface
+    constructor(ResolutionWidth,ResolutionHeight,FocusLengthInMilimeters,MatrixWidthInMilimeters,MatrixHeightInMilimeters,Tilt,CameraAzimuth,CameraHeight) {
+        this.ResolutionWidth = ResolutionWidth;
+        this.ResolutionHeight = ResolutionHeight;
+        this.FocusLengthInMilimeters = FocusLengthInMilimeters;
+        this.MatrixWidthInMilimeters = MatrixWidthInMilimeters;
+        this.MatrixHeightInMilimeters = MatrixHeightInMilimeters;
+        this.Tilt = Tilt; // from 0 to 90 degrees
+        this.CameraAzimuth = CameraAzimuth; // from 0 to 360 degrees, 0 - North, clockwise
+        this.CameraHeight = CameraHeight; // absolute height below earth's surface
     }
 }
 

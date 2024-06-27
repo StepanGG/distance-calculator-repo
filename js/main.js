@@ -65,8 +65,10 @@ canvas.on('mouse:move', function (event) {
     var realY = (pointer.y / imgInstance.scaleY) / zoom;
 
     if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight()) {
-        coordinates.style.left = Math.round(canvasConteinerBounds.width) - 90 + 'px';
-        coordinates.style.top = Math.round(canvasConteinerBounds.top) + 'px';
+        // coordinates.style.left = Math.round(canvasConteinerBounds.width) - 90 + 'px';
+        // coordinates.style.top = Math.round(canvasConteinerBounds.top) + 'px';
+        coordinates.style.left = pointer.x + 'px';
+        coordinates.style.top = pointer.y + 'px';
         coordinates.textContent = 'X: ' + Math.round(realX) + ', Y: ' + Math.round(realY);
         coordinates.style.display = 'block';
     } else {
@@ -108,14 +110,13 @@ canvas.on('mouse:down', function (opt) {
         this.lastPosY = evt.clientY;
     }
     var pointer = canvas.getPointer(opt.e);
-    if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight() && evt.altKey === false) {
+    if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight() && evt.altKey === false && validateConditions() !== false) {
         var zoom = canvas.getZoom();
         var realX = (pointer.x / imgInstance.scaleX) / zoom;
         var realY = (pointer.y / imgInstance.scaleY) / zoom;
         var imgW = imgInstance.getScaledWidth();
         var imgH = imgInstance.getScaledHeight();
         var [vectorX, vectorY] = getDetlasByPoint(imgInstance.width, imgInstance.height, realX, realY);
-        console.log(realX, realY, imgInstance.width, imgInstance.height, vectorX, vectorY);
 
         var circle = new fabric.Circle({
             radius: 2,
@@ -146,21 +147,33 @@ canvas.on('mouse:down', function (opt) {
         canvas.requestRenderAll();
 
         // add to result table
-        var FocusLengthInMilimeters =  focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
-        pushDataToTable(
-            index,
-            vectorX,
-            vectorY,
-            imgInstance.width,
-            imgInstance.height,
-            FocusLengthInMilimeters,
-            10,
-            25.9,
-            3.799,
-            5.053
-        );
+        var focalLengthValue = focalLength ? focalLength.numerator / focalLength.denominator : 0;
+        var mtrW = parseFloat(document.forms["conditionValues"]["MatrixWidthInMilimetersInpt"].value);
+        var mtrH = parseFloat(document.forms["conditionValues"]["MatrixHeightInMilimetersInpt"].value);
+        var tilt = parseFloat(document.forms["conditionValues"]["TiltInpt"].value);
+        var camH = parseFloat(document.forms["conditionValues"]["CameraHeightInpt"].value);
+        var resolutionW = imgInstance.width;
+        var resolutionH = imgInstance.height;
+        const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, 0, camH);
+        var { deltaXInMeters, deltaYInMeters } = getDeltas(vectorX, vectorY, cameraModel);
+        deltaXInMeters = deltaXInMeters.toFixed(2);
+        deltaYInMeters = deltaYInMeters.toFixed(2);
+        var FocusLengthInMilimeters = focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
+
+        var tableData = {
+            0: index,
+            1: vectorX,
+            2: vectorY,
+            3: deltaXInMeters,
+            4: deltaYInMeters,
+            5: resolutionW,
+            6: resolutionH,
+            7: FocusLengthInMilimeters
+        }
+
+        pushDataToTable(tableData);
         index++;
-    } 
+    }
 
 });
 
@@ -175,49 +188,13 @@ $(".custom-file-input").on("change", function () {
     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 });
 
-function pushDataToTable(
-    Index,
-    DeltaXInPixel,
-    DeltaYInPixel,
-    ResolutionWidth,
-    ResolutionHeight,
-    FocusLengthInMilimeters,
-    CameraHeight,
-    Tilt,
-    MatrixWidthInMilimeters,
-    MatrixHeightInMilimeters
-){
+function pushDataToTable(data) {
     var trElm = document.createElement("tr");
-    var IndexTdElm = document.createElement("td");
-    var DeltaXInPixelTdElm = document.createElement("td");
-    var DeltaYInPixelTdElm = document.createElement("td");
-    var ResolutionWidthTdElm = document.createElement("td");
-    var ResolutionHeightTdElm = document.createElement("td");
-    var FocusLengthInMilimetersTdElm = document.createElement("td");
-    var CameraHeightTdElm = document.createElement("td");
-    var TiltTdElm = document.createElement("td");
-    var MatrixWidthInMilimetersTdElm = document.createElement("td");
-    var MatrixHeightInMilimetersTdElm = document.createElement("td");
-    IndexTdElm.innerText = Index;
-    trElm.append(IndexTdElm);
-    DeltaXInPixelTdElm.innerText = DeltaXInPixel;
-    trElm.append(DeltaXInPixelTdElm);
-    DeltaYInPixelTdElm.innerText = DeltaYInPixel;
-    trElm.append(DeltaYInPixelTdElm);
-    ResolutionWidthTdElm.innerText = ResolutionWidth;
-    trElm.append(ResolutionWidthTdElm);
-    ResolutionHeightTdElm.innerText = ResolutionHeight;
-    trElm.append(ResolutionHeightTdElm);
-    FocusLengthInMilimetersTdElm.innerText = FocusLengthInMilimeters;
-    trElm.append(FocusLengthInMilimetersTdElm);
-    CameraHeightTdElm.innerText = CameraHeight;
-    trElm.append(CameraHeightTdElm);
-    TiltTdElm.innerText = Tilt;
-    trElm.append(TiltTdElm);
-    MatrixWidthInMilimetersTdElm.innerText = MatrixWidthInMilimeters;
-    trElm.append(MatrixWidthInMilimetersTdElm);
-    MatrixHeightInMilimetersTdElm.innerText = MatrixHeightInMilimeters;
-    trElm.append(MatrixHeightInMilimetersTdElm);
+    for (const [key, value] of Object.entries(data)) {
+        var tdElm = document.createElement("td");
+        tdElm.innerText = value;
+        trElm.append(tdElm);
+    }
     var tbElm = document.getElementsByTagName('tbody');
     tbElm[0].append(trElm);
 }

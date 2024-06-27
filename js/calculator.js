@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param {*} deltaX Delta X
+ * @param {*} deltaY Delta Y
+ * @param {*} cameraModel Model with all device/camera parameters needed in calculation 
+ * @returns Delta X, Y in meters
+ */
 function getDeltas(deltaX, deltaY, cameraModel) {
     const tiltInRadians = cameraModel.Tilt * Math.PI / 180;
 
@@ -14,7 +21,7 @@ function getDeltas(deltaX, deltaY, cameraModel) {
 }
 
 class CameraModel {
-    constructor(ResolutionWidth,ResolutionHeight,FocusLengthInMilimeters,MatrixWidthInMilimeters,MatrixHeightInMilimeters,Tilt,CameraAzimuth,CameraHeight) {
+    constructor(ResolutionWidth, ResolutionHeight, FocusLengthInMilimeters, MatrixWidthInMilimeters, MatrixHeightInMilimeters, Tilt, CameraAzimuth, CameraHeight) {
         this.ResolutionWidth = ResolutionWidth;
         this.ResolutionHeight = ResolutionHeight;
         this.FocusLengthInMilimeters = FocusLengthInMilimeters;
@@ -25,7 +32,14 @@ class CameraModel {
         this.CameraHeight = CameraHeight; // absolute height below earth's surface
     }
 }
-
+/**
+ * 
+ * @param {*} imgW Device resolution width
+ * @param {*} imgH Device resolution height
+ * @param {*} pointX Point X on image
+ * @param {*} pointY Point Y on image
+ * @returns Delta X, Y 
+ */
 function getDetlasByPoint(imgW, imgH, pointX, pointY) {
     var centerX = imgW / 2;
     var centerY = imgH / 2;
@@ -36,4 +50,25 @@ function getDetlasByPoint(imgW, imgH, pointX, pointY) {
     vectorX = vectorX.toFixed(0);
     vectorY = vectorY.toFixed(0);
     return [vectorX, vectorY];
+}
+
+/**
+ * 
+ * @param {*} realCaleDiagonal The diagonal of the device is taken from the select
+ * @param {*} resolutionWidth Device resolution width
+ * @param {*} resolutionHeight  Device resolution height
+ * @returns 
+ */
+function getMatrixSize(realCaleDiagonal, resolutionWidth, resolutionHeight) {
+    let formatTypeDiagonal = realCaleDiagonal / 1.5875;
+    if (realCaleDiagonal < 25.4 / 2) {
+        formatTypeDiagonal = realCaleDiagonal / 1.41111;
+    }
+
+    let matrixAlphaAngle = Math.atan(resolutionHeight / resolutionWidth);
+
+    let matrixWidthInMilimeters = formatTypeDiagonal * Math.cos(matrixAlphaAngle);
+    let matrixHeightInMilimeters = formatTypeDiagonal * Math.sin(matrixAlphaAngle);
+
+    return { matrixWidthInMilimeters, matrixHeightInMilimeters };
 }

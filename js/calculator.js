@@ -40,7 +40,7 @@ class CameraModel {
  * @param {*} pointY Point Y on image
  * @returns Delta X, Y 
  */
-function getDetlasByPoint(imgW, imgH, pointX, pointY) {
+function getDeltasByPoint(imgW, imgH, pointX, pointY) {
     var centerX = imgW / 2;
     var centerY = imgH / 2;
 

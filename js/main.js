@@ -57,31 +57,33 @@ document.getElementById('imageInput').addEventListener('change', function (event
 });
 
 canvas.on('mouse:move', function (event) {
-    var pointer = canvas.getPointer(event.e);
-    var coordinates = document.getElementById('coordinates');
-    var canvasConteinerBounds = document.querySelector("#imageContainer").getBoundingClientRect();
-    var zoom = canvas.getZoom();
-    var realX = (pointer.x / imgInstance.scaleX) / zoom;
-    var realY = (pointer.y / imgInstance.scaleY) / zoom;
+    if (imgInstance !== undefined) {
+        var pointer = canvas.getPointer(event.e);
+        var coordinates = document.getElementById('coordinates');
+        var canvasConteinerBounds = document.querySelector("#imageContainer").getBoundingClientRect();
+        var zoom = canvas.getZoom();
+        var realX = (pointer.x / imgInstance.scaleX) / zoom;
+        var realY = (pointer.y / imgInstance.scaleY) / zoom;
 
-    if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight()) {
-        // coordinates.style.left = Math.round(canvasConteinerBounds.width) - 90 + 'px';
-        // coordinates.style.top = Math.round(canvasConteinerBounds.top) + 'px';
-        coordinates.style.left = pointer.x + 'px';
-        coordinates.style.top = pointer.y + 'px';
-        coordinates.textContent = 'X: ' + Math.round(realX) + ', Y: ' + Math.round(realY);
-        coordinates.style.display = 'block';
-    } else {
-        coordinates.style.display = 'none';
-    }
-    if (this.isDragging) {
-        var e = event.e;
-        var vpt = this.viewportTransform;
-        vpt[4] += e.clientX - this.lastPosX;
-        vpt[5] += e.clientY - this.lastPosY;
-        this.requestRenderAll();
-        this.lastPosX = e.clientX;
-        this.lastPosY = e.clientY;
+        if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight()) {
+            // coordinates.style.left = Math.round(canvasConteinerBounds.width) - 90 + 'px';
+            // coordinates.style.top = Math.round(canvasConteinerBounds.top) + 'px';
+            coordinates.style.left = pointer.x + 'px';
+            coordinates.style.top = pointer.y + 'px';
+            coordinates.textContent = 'X: ' + Math.round(realX) + ', Y: ' + Math.round(realY);
+            coordinates.style.display = 'block';
+        } else {
+            coordinates.style.display = 'none';
+        }
+        if (this.isDragging) {
+            var e = event.e;
+            var vpt = this.viewportTransform;
+            vpt[4] += e.clientX - this.lastPosX;
+            vpt[5] += e.clientY - this.lastPosY;
+            this.requestRenderAll();
+            this.lastPosX = e.clientX;
+            this.lastPosY = e.clientY;
+        }
     }
 });
 
@@ -100,81 +102,82 @@ canvas.on('mouse:wheel', function (event) {
     event.e.preventDefault();
     event.e.stopPropagation();
 });
-var index = 0;
+var index = 1;
 canvas.on('mouse:down', function (opt) {
-    var evt = opt.e;
-    if (evt.altKey === true) {
-        this.isDragging = true;
-        this.selection = false;
-        this.lastPosX = evt.clientX;
-        this.lastPosY = evt.clientY;
-    }
-    var pointer = canvas.getPointer(opt.e);
-    if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight() && evt.altKey === false && validateConditions() !== false) {
-        var zoom = canvas.getZoom();
-        var realX = (pointer.x / imgInstance.scaleX) / zoom;
-        var realY = (pointer.y / imgInstance.scaleY) / zoom;
-        var imgW = imgInstance.getScaledWidth();
-        var imgH = imgInstance.getScaledHeight();
-        var [vectorX, vectorY] = getDetlasByPoint(imgInstance.width, imgInstance.height, realX, realY);
-
-        var circle = new fabric.Circle({
-            radius: 2,
-            fill: 'red',
-            left: pointer.x,
-            top: pointer.y,
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-            deleteble: true
-        });
-        var line = new fabric.Line([imgW / 2, imgH / 2, pointer.x, pointer.y], {
-            strokeWidth: 1,
-            stroke: 'red',
-            selectable: false,
-            deleteble: true
-        });
-        var text = new fabric.Text('(' + vectorX + ', ' + vectorY + ')', {
-            fontSize: 14,
-            stroke: 'red',
-            left: pointer.x + 20,
-            top: pointer.y - 20,
-            selectable: false,
-            originX: 'center',
-            originY: 'center',
-        });
-        canvas.add(circle, line, text);
-        canvas.requestRenderAll();
-
-        // add to result table
-        var focalLengthValue = focalLength ? focalLength.numerator / focalLength.denominator : 0;
-        var mtrW = parseFloat(document.forms["conditionValues"]["MatrixWidthInMilimetersInpt"].value);
-        var mtrH = parseFloat(document.forms["conditionValues"]["MatrixHeightInMilimetersInpt"].value);
-        var tilt = parseFloat(document.forms["conditionValues"]["TiltInpt"].value);
-        var camH = parseFloat(document.forms["conditionValues"]["CameraHeightInpt"].value);
-        var resolutionW = imgInstance.width;
-        var resolutionH = imgInstance.height;
-        const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, 0, camH);
-        var { deltaXInMeters, deltaYInMeters } = getDeltas(vectorX, vectorY, cameraModel);
-        deltaXInMeters = deltaXInMeters.toFixed(2);
-        deltaYInMeters = deltaYInMeters.toFixed(2);
-        var FocusLengthInMilimeters = focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
-
-        var tableData = {
-            0: index,
-            1: vectorX,
-            2: vectorY,
-            3: deltaXInMeters,
-            4: deltaYInMeters,
-            5: resolutionW,
-            6: resolutionH,
-            7: FocusLengthInMilimeters
+    if (imgInstance !== undefined) {
+        var evt = opt.e;
+        if (evt.altKey === true) {
+            this.isDragging = true;
+            this.selection = false;
+            this.lastPosX = evt.clientX;
+            this.lastPosY = evt.clientY;
         }
+        var pointer = canvas.getPointer(opt.e);
+        if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight() && evt.altKey === false && validateConditions() !== false) {
+            var zoom = canvas.getZoom();
+            var realX = (pointer.x / imgInstance.scaleX) / zoom;
+            var realY = (pointer.y / imgInstance.scaleY) / zoom;
+            var imgW = imgInstance.getScaledWidth();
+            var imgH = imgInstance.getScaledHeight();
+            var [vectorX, vectorY] = getDeltasByPoint(imgInstance.width, imgInstance.height, realX, realY);
 
-        pushDataToTable(tableData);
-        index++;
+            var circle = new fabric.Circle({
+                radius: 2,
+                fill: 'red',
+                left: pointer.x,
+                top: pointer.y,
+                originX: 'center',
+                originY: 'center',
+                selectable: false,
+                deleteble: true
+            });
+            var line = new fabric.Line([imgW / 2, imgH / 2, pointer.x, pointer.y], {
+                strokeWidth: 1,
+                stroke: 'red',
+                selectable: false,
+                deleteble: true
+            });
+            var text = new fabric.Text('' + index, {
+                fontSize: 24,
+                fill: 'red',
+                left: pointer.x + 20,
+                top: pointer.y - 20,
+                selectable: false,
+                originX: 'center',
+                originY: 'center',
+            });
+            canvas.add(circle, line, text);
+            canvas.requestRenderAll();
+
+            // add to result table
+            var focalLengthValue = focalLength ? focalLength.numerator / focalLength.denominator : 0;
+            var mtrW = parseFloat(document.forms["conditionValues"]["MatrixWidthInMilimetersInpt"].value);
+            var mtrH = parseFloat(document.forms["conditionValues"]["MatrixHeightInMilimetersInpt"].value);
+            var tilt = parseFloat(document.forms["conditionValues"]["TiltInpt"].value);
+            var camH = parseFloat(document.forms["conditionValues"]["CameraHeightInpt"].value);
+            var resolutionW = imgInstance.width;
+            var resolutionH = imgInstance.height;
+            const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, 0, camH);
+            var { deltaXInMeters, deltaYInMeters } = getDeltas(vectorX, vectorY, cameraModel);
+            deltaXInMeters = deltaXInMeters.toFixed(2);
+            deltaYInMeters = deltaYInMeters.toFixed(2);
+            var FocusLengthInMilimeters = focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
+
+            var tableData = {
+                0: index,
+                1: vectorX,
+                2: vectorY,
+                3: deltaXInMeters,
+                4: deltaYInMeters,
+                5: resolutionW,
+                6: resolutionH,
+                7: FocusLengthInMilimeters
+            }
+
+            pushDataToTable(tableData);
+            index++;
+        }
     }
-
 });
 
 canvas.on('mouse:up', function (opt) {

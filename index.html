@@ -26,28 +26,75 @@
                     <p><strong>Focal Length:</strong> <span id="imageFocalLength"></span></p>
                     <p><strong>Digital Zoom:</strong> <span id="imageDigitalZoom"></span></p>
                 </div>
-                <div id="inputs" class="d-none">
-                    <form class="needs-validation" novalidate name="conditionValues" required
-                        style="width: 100%; display: flex; justify-content: space-around;">
-                        <div style="width: min-content;">
-                            <label for="MatrixWidthInMilimetersInpt"><b>MatrixWidth(mm)</b></label>
-                            <input class="form-control" id="MatrixWidthInMilimetersInpt"
-                                name="MatrixWidthInMilimetersInpt" type="number" min="0" step="0.1" required value="3.799"/> <!-- test value MatrixWidthInMilimeters: 3.799 -->
+                <div id="inputs" class="d-flex d-none">
+                    <div class="sensorFormatTypeConteiner">
+                        <label for="sensorFormatType"><b>Sensor Format Type</b></label>
+                        <select id="sensorFormatType" name="sensorFormatType" class="form-control d-inline"
+                            onchange="updateDimensions()">
+                            <option value="35mmFullFrame">35mm Full Frame</option>
+                            <option value="APS-C">APS-C</option>
+                            <option value="4/3">4/3"</option>
+                            <option value="1.1">1.1"</option>
+                            <option value="1">1"</option>
+                            <option value="1/1.1">1/1.1"</option>
+                            <option value="1/1.2">1/1.2"</option>
+                            <option value="2/3">2/3"</option>
+                            <option value="1/1.6">1/1.6"</option>
+                            <option value="1/1.7">1/1.7"</option>
+                            <option value="1/1.8">1/1.8"</option>
+                            <option value="1/1.9">1/1.9"</option>
+                            <option value="1/2.0">1/2.0"</option>
+                            <option value="1/2.3">1/2.3"</option>
+                            <option value="1/2.5">1/2.5"</option>
+                            <option value="1/2.7">1/2.7"</option>
+                            <option value="1/2.8">1/2.8"</option>
+                            <option value="1/2.9">1/2.9"</option>
+                            <option value="1/3.0">1/3.0"</option>
+                            <option value="1/3.2">1/3.2"</option>
+                            <option value="1/3.4">1/3.4"</option>
+                            <option value="1/3.6">1/3.6"</option>
+                            <option value="1/4.0">1/4.0"</option>
+                            <option value="1/5.0">1/5.0"</option>
+                            <option value="1/6.0">1/6.0"</option>
+                            <option value="1/7.5">1/7.5"</option>
+                            <option value="1/9.0">1/9.0"</option>
+                        </select>
+                        <label for="aspectRatio"><b>Aspect Ratio</b></label>
+                        <select id="aspectRatio" name="aspectRatio" class="form-control d-inline"
+                            onchange="updateDimensions()">
+                            <option value="4:3">4:3</option>
+                            <option value="3:2">3:2</option>
+                            <option value="16:10">16:10</option>
+                            <option value="16:9">16:9</option>
+                        </select>
+                    </div>
+
+                    <form class="needs-validation conditionInputs" novalidate name="conditionValues" required>
+                        <div>
+                            <div style="width: min-content;">
+                                <label for="MatrixWidthInMilimetersInpt"><b>MatrixWidth(mm)</b></label>
+                                <input class="form-control" id="MatrixWidthInMilimetersInpt"
+                                    name="MatrixWidthInMilimetersInpt" type="number" min="0" step="0.01" required
+                                    value="" /> <!-- test value MatrixWidthInMilimeters: 3.799 -->
+                            </div>
+                            <div style="width: min-content;">
+                                <label for="MatrixHeightInMilimetersInpt"><b>MatrixHeight(mm)</b></label>
+                                <input class="form-control" id="MatrixHeightInMilimetersInpt"
+                                    name="MatrixHeightInMilimetersInpt" type="number" min="0" step="0.01" required
+                                    value="" /> <!-- test value MatrixHeightInMilimeters: 5.053 -->
+                            </div>
                         </div>
-                        <div style="width: min-content;">
-                            <label for="MatrixHeightInMilimetersInpt"><b>MatrixHeight(mm)</b></label>
-                            <input class="form-control" id="MatrixHeightInMilimetersInpt"
-                                name="MatrixHeightInMilimetersInpt" type="number" min="0" step="0.1" required value="5.053"/> <!-- test value MatrixHeightInMilimeters: 5.053 -->
-                        </div>
-                        <div style="width: min-content;">
-                            <label for="TiltInpt"><b>Tilt</b></label>
-                            <input class="form-control" id="TiltInpt" name="TiltInpt" type="number" min="0" step="0.1"
-                                required value="60"/> <!-- test value Tilt: 60 -->
-                        </div>
-                        <div style="width: min-content;">
-                            <label for="CameraHeightInpt"><b>CameraHeight</b></label>
-                            <input class="form-control" id="CameraHeightInpt" name="CameraHeightInpt" type="number"
-                                min="0" step="0.1" required  value="1.2"/> <!-- test value CameraHeight: 1.2 -->
+                        <div>
+                            <div style="width: min-content;">
+                                <label for="TiltInpt"><b>Tilt</b></label>
+                                <input class="form-control" id="TiltInpt" name="TiltInpt" type="number" min="0" step="0.01"
+                                    required value="" /> <!-- test value Tilt: 60 -->
+                            </div>
+                            <div style="width: min-content;">
+                                <label for="CameraHeightInpt"><b>CameraHeight</b></label>
+                                <input class="form-control" id="CameraHeightInpt" name="CameraHeightInpt" type="number"
+                                    min="0" step="0.01" required value="" /> <!-- test value CameraHeight: 1.2 -->
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -84,6 +131,7 @@
     <!-- Exif-js -->
     <script src="/js/vendors/exif.min.js"></script>
     <!-- -->
+    <script src="/js/helpers/select.js"></script>
     <script src="/js/helpers/validation.js"></script>
     <script src="/js/main.js"></script>
     <script src="/js/calculator.js"></script>

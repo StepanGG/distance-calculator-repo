@@ -1,6 +1,7 @@
 var canvas = new fabric.Canvas('canvas');
 var imgInstance;
 var focalLength;
+
 function resizeCanvas() {
     var container = document.getElementById('imageContainer');
     canvas.setWidth(container.clientWidth);

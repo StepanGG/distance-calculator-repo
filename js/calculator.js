@@ -34,8 +34,8 @@ class CameraModel {
 }
 /**
  * 
- * @param {*} imgW Device resolution width
- * @param {*} imgH Device resolution height
+ * @param {*} imgW Image resolution width
+ * @param {*} imgH Image resolution height
  * @param {*} pointX Point X on image
  * @param {*} pointY Point Y on image
  * @returns Delta X, Y 

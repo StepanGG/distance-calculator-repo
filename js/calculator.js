@@ -72,3 +72,24 @@ function getMatrixSize(realCaleDiagonal, resolutionWidth, resolutionHeight) {
 
     return { matrixWidthInMilimeters, matrixHeightInMilimeters };
 }
+/**
+ * 
+ * @param {*} deltaXInMeters Delta X in meters 
+ * @param {*} deltaYInMeters Delta Y in meters 
+ * @param {*} cameraAzimuth Azimuth [from 0 to 360 degrees, 0 - North, clockwise]
+ * @param {*} latitude Latitude
+ * @param {*} longitude Longitude
+ * @returns 
+ */
+function getCoords(deltaXInMeters, deltaYInMeters, cameraAzimuth, latitude, longitude) {
+    const meterInDegree = 111111;
+    const azimuthInRadians = cameraAzimuth * Math.PI / 180;
+   
+    const deltaXInMetersEast = deltaXInMeters * Math.cos(azimuthInRadians) - deltaYInMeters * Math.sin(azimuthInRadians);
+    const deltaYInMetersNorth = deltaYInMeters * Math.cos(azimuthInRadians) + deltaXInMeters * Math.sin(azimuthInRadians);
+   
+    const deltaLatitude = deltaYInMetersNorth / meterInDegree;
+    const deltaLongitude = deltaXInMetersEast / (meterInDegree * Math.cos(latitude * Math.PI / 180));
+   
+    return [latitude + deltaLatitude, longitude + deltaLongitude];
+  }

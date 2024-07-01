@@ -18,6 +18,7 @@ document.getElementById('imageInput').addEventListener('change', function (event
             fabric.Image.fromURL(e.target.result, function (img) {
                 imgInstance = img;
 
+                resizeCanvas();
                 var container = document.getElementById('imageContainer');
                 var maxWidth = container.clientWidth;
                 var maxHeight = container.clientHeight;
@@ -32,7 +33,8 @@ document.getElementById('imageInput').addEventListener('change', function (event
 
                 canvas.clear();
                 img.selectable = false;
-                container.style = "border: 1px solid black;";
+                // container.style = "border: 1px solid black;";
+
                 canvas.add(img);
                 canvas.renderAll();
 
@@ -156,14 +158,17 @@ canvas.on('mouse:down', function (opt) {
             var mtrH = parseFloat(document.forms["conditionValues"]["MatrixHeightInMilimetersInpt"].value);
             var tilt = parseFloat(document.forms["conditionValues"]["TiltInpt"].value);
             var camH = parseFloat(document.forms["conditionValues"]["CameraHeightInpt"].value);
+            var longitude = parseFloat(document.forms["conditionValues"]["LongInpt"].value);
+            var latitude = parseFloat(document.forms["conditionValues"]["LatitInpt"].value);
+            var cameraAzimuth = parseFloat(document.forms["conditionValues"]["CameraAzimuthInpt"].value);
             var resolutionW = imgInstance.width;
             var resolutionH = imgInstance.height;
-            const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, 0, camH);
+            const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, cameraAzimuth, camH);
             var { deltaXInMeters, deltaYInMeters } = getDeltas(vectorX, vectorY, cameraModel);
             deltaXInMeters = deltaXInMeters.toFixed(2);
             deltaYInMeters = deltaYInMeters.toFixed(2);
             var FocusLengthInMilimeters = focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
-
+            var [coordX, coordY] = getCoords(deltaXInMeters, deltaYInMeters, cameraAzimuth, latitude, longitude);
             var tableData = {
                 0: index,
                 1: vectorX,

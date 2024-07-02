@@ -152,35 +152,8 @@ canvas.on('mouse:down', function (opt) {
             canvas.add(circle, line, text);
             canvas.requestRenderAll();
 
-            // add to result table
-            var focalLengthValue = focalLength ? focalLength.numerator / focalLength.denominator : 0;
-            var mtrW = parseFloat(document.forms["conditionValues"]["MatrixWidthInMilimetersInpt"].value);
-            var mtrH = parseFloat(document.forms["conditionValues"]["MatrixHeightInMilimetersInpt"].value);
-            var tilt = parseFloat(document.forms["conditionValues"]["TiltInpt"].value);
-            var camH = parseFloat(document.forms["conditionValues"]["CameraHeightInpt"].value);
-            var longitude = parseFloat(document.forms["conditionValues"]["LongInpt"].value);
-            var latitude = parseFloat(document.forms["conditionValues"]["LatitInpt"].value);
-            var cameraAzimuth = parseFloat(document.forms["conditionValues"]["CameraAzimuthInpt"].value);
-            var resolutionW = imgInstance.width;
-            var resolutionH = imgInstance.height;
-            const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, cameraAzimuth, camH);
-            var { deltaXInMeters, deltaYInMeters } = getDeltas(vectorX, vectorY, cameraModel);
-            deltaXInMeters = deltaXInMeters.toFixed(2);
-            deltaYInMeters = deltaYInMeters.toFixed(2);
-            var FocusLengthInMilimeters = focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
-            var [coordX, coordY] = getCoords(deltaXInMeters, deltaYInMeters, cameraAzimuth, latitude, longitude);
-            var tableData = {
-                0: index,
-                1: vectorX,
-                2: vectorY,
-                3: deltaXInMeters,
-                4: deltaYInMeters,
-                5: resolutionW,
-                6: resolutionH,
-                7: FocusLengthInMilimeters
-            }
-
-            pushDataToTable(tableData);
+            // calculate and add to result table
+            calculateInputData(index, focalLength, vectorX, vectorY);
             index++;
         }
     }
@@ -196,6 +169,41 @@ $(".custom-file-input").on("change", function () {
     var fileName = $(this).val().split("\\").pop();
     $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 });
+
+function calculateInputData(index, focalLength, vectorX, vectorY) {
+    // Input variables 
+    var focalLengthValue = focalLength ? focalLength.numerator / focalLength.denominator : 0;
+    var mtrW = parseFloat(document.forms["conditionValues"]["MatrixWidthInMilimetersInpt"].value);
+    var mtrH = parseFloat(document.forms["conditionValues"]["MatrixHeightInMilimetersInpt"].value);
+    var tilt = parseFloat(document.forms["conditionValues"]["TiltInpt"].value);
+    var camH = parseFloat(document.forms["conditionValues"]["CameraHeightInpt"].value);
+    var longitude = parseFloat(document.forms["conditionValues"]["LongInpt"].value);
+    var latitude = parseFloat(document.forms["conditionValues"]["LatitInpt"].value);
+    var cameraAzimuth = parseFloat(document.forms["conditionValues"]["CameraAzimuthInpt"].value);
+    var resolutionW = imgInstance.width;
+    var resolutionH = imgInstance.height;
+
+    const cameraModel = new CameraModel(imgInstance.width, imgInstance.height, focalLengthValue, mtrW, mtrH, tilt, cameraAzimuth, camH); // Camera props
+    // calculations 
+    var { deltaXInMeters, deltaYInMeters } = getDeltas(vectorX, vectorY, cameraModel);
+    deltaXInMeters = deltaXInMeters.toFixed(2);
+    deltaYInMeters = deltaYInMeters.toFixed(2);
+    var FocusLengthInMilimeters = focalLength ? focalLength.numerator / focalLength.denominator + ' mm' : 'N/A';
+
+    var [coordX, coordY] = getCoords(deltaXInMeters, deltaYInMeters, cameraAzimuth, latitude, longitude);
+    var tableData = {
+        0: index,
+        1: vectorX,
+        2: vectorY,
+        3: deltaXInMeters,
+        4: deltaYInMeters,
+        5: resolutionW,
+        6: resolutionH,
+        7: FocusLengthInMilimeters
+    }
+
+    pushDataToTable(tableData);
+}
 
 function pushDataToTable(data) {
     var trElm = document.createElement("tr");

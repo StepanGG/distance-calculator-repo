@@ -195,9 +195,8 @@ function calculateInputData(index, focalLength, vectorX, vectorY) {
         2: vectorY,
         3: deltaXInMeters,
         4: deltaYInMeters,
-        5: resolutionW,
-        6: resolutionH,
-        7: FocusLengthInMilimeters
+        5: coordX ? coordX : "N/A",
+        6: coordY ? coordY : "N/A"
     }
 
     pushDataToTable(tableData);

@@ -13,7 +13,7 @@
 <body>
     <div style="display: flex; justify-content: space-around; margin: 5px; flex-wrap: wrap; height: 100vh;">
         <div class="position-relative" style="display: flex; flex-direction: column; width: 45%; flex: 1 1 50%;">
-            <div class="custom-file mb-3">
+            <div class="custom-file mb-2">
                 <input type="file" class="custom-file-input" id="imageInput">
                 <label class="custom-file-label" for="imageInput">Choose file</label>
             </div>
@@ -32,8 +32,8 @@
             <div id="coordinates"></div>
 
         </div>
-        <div style="width: 50%; border: rgb(255, 255, 255) 1px dashed; padding: 5px; flex: 1 1 50%;">
-            <h5>Result table</h5>
+        <div class="resultTableContainer">
+            <h5 class="mb-0">Result table</h5>
             <table id="resultTable">
                 <thead>
                     <tr>
@@ -42,9 +42,8 @@
                         <th title="DeltaYInPixel">DeltaY(px)</th>
                         <th title="DeltaXInMeters">DeltaX(m)</th>
                         <th title="DeltaYInMeters">DeltaY(m)</th>
-                        <th title="ResolutionWidth">ResolutionWidth</th>
-                        <th title="ResolutionHeight">ResolutionHeight</th>
-                        <th title="FocusLengthInMilimeters">FocusLength(mm)</th>
+                        <th title="ObjectLatitude">Object Latitude</th>
+                        <th title="ObjectLongitude">Object Longitude</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -124,12 +123,12 @@
                     </div>
                     <div>
                         <div style="width: min-content;">
-                            <label for="LatitInpt"><b>Latitude</b></label>
+                            <label for="LatitInpt"><b>Camera Latitude</b></label>
                             <input class="form-control" id="LatitInpt" name="LatitInpt" type="number" min="0"
                                 step="0.01" required value="" />
                         </div>
                         <div style="width: min-content;">
-                            <label for="LongInpt"><b>Longitude</b></label>
+                            <label for="LongInpt"><b>Camera Longitude</b></label>
                             <input class="form-control" id="LongInpt" name="LongInpt" type="number" min="0" step="0.01"
                                 required value="" />
                         </div>

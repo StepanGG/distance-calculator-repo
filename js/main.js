@@ -33,12 +33,12 @@ document.getElementById('imageInput').addEventListener('change', function (event
 
                 canvas.clear();
                 img.selectable = false;
-                // container.style = "border: 1px solid black;";
 
                 canvas.add(img);
                 canvas.renderAll();
 
                 resizeCanvas();
+                canvas.lowerCanvasEl.style.border = "1px solid"
 
                 document.getElementById('imageName').textContent = file.name;
                 document.getElementById('imageSize').textContent = (file.size / 1024).toFixed(2);
@@ -69,8 +69,6 @@ canvas.on('mouse:move', function (event) {
         var realY = (pointer.y / imgInstance.scaleY) / zoom;
 
         if (pointer.x >= imgInstance.left && pointer.x <= imgInstance.left + imgInstance.getScaledWidth() && pointer.y >= imgInstance.top && pointer.y <= imgInstance.top + imgInstance.getScaledHeight()) {
-            // coordinates.style.left = Math.round(canvasConteinerBounds.width) - 90 + 'px';
-            // coordinates.style.top = Math.round(canvasConteinerBounds.top) + 'px';
             coordinates.style.left = pointer.x + 'px';
             coordinates.style.top = pointer.y + 'px';
             coordinates.textContent = 'X: ' + Math.round(realX) + ', Y: ' + Math.round(realY);
